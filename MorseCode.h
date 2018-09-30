@@ -9,7 +9,7 @@ class MorseCode
 public:
 	MorseCode();
 	~MorseCode();
-	void SendWord(char* word, void(*toCall)(CodedChar,int, int));
+	void SendWord(char* word, void(*duringOn)(), void(*duringOff)());
 	void setDotTime(int toSet);
 
 

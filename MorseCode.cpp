@@ -11,18 +11,31 @@ MorseCode::~MorseCode(){
 
 };
 
-void MorseCode::SendWord(char* word, void(*toCall)(CodedChar,int, int)){
+void MorseCode::SendWord(char* word, void(*duringOn)(), void(*duringOff)()){
 	for (int i = 0; word[i] != '\0'; ++i){
 		char currChar = word[i];
 		Serial.print("Displaying Character: ");
 		Serial.print(currChar);
 		Serial.print("\n");
 		if(currChar == ' '){
+			duringOff();
 			delay(this->dotTime*7);
 			continue;
 		}
 		else {
-			toCall(GetCharacter(currChar), this->dotTime, this->dashTime);
+			CodedChar codedChar = GetCharacter(currChar);
+			for (int i = 0; i < codedChar.codesLength; ++i){
+				duringOn();
+				if(codedChar.codes[i] == CODE_SHORT){
+					delay(this->dotTime);
+				}
+				else{
+					delay(this->dashTime);
+				}
+				
+				duringOff();
+				delay(dotTime);
+			}
 		}
 		delay(dotTime*3);
 	}

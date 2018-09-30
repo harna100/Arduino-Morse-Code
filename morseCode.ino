@@ -16,7 +16,6 @@ MorseCode* coder;
 
 CRGB leds[NUM_LEDS];
 
-
 void setup()
 {
 	Serial.begin(57600);
@@ -35,26 +34,15 @@ void loop()
 	delay(TIME_BEFORE_START);
 
 	Serial.print("Start sending\n");
-	coder->SendWord(toSend, sendToNeopixel);
+	coder->SendWord(toSend, setAllOn, setAllToBlack);
 
 	Serial.print("Finished sending\n");
 	setAllToBlack();
 	delay(TIME_BETWEEN_SENDING);
 }
 
-
-void sendToNeopixel(CodedChar character, int shortPulseTime, int longPulseTime){
-	for (int i = 0; i < character.codesLength; ++i){
-		setAllToColor(CRGB::Red);
-		if(character.codes[i] == CODE_SHORT){
-			delay(shortPulseTime);
-		}
-		else{
-			delay(longPulseTime);
-		}
-		setAllToBlack();
-		delay(shortPulseTime);
-	}
+void setAllOn(){
+	setAllToColor(CRGB::Red);
 }
 
 void setAllToColor(CRGB color){
