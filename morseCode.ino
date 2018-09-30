@@ -10,6 +10,7 @@
 #define DOT_TIME 250
 #define TIME_BEFORE_START 5000
 #define TIME_BETWEEN_SENDING 5000
+#define WORD_TO_SEND "SOS\0"
 
 char* toSend;
 MorseCode* coder;
@@ -19,7 +20,7 @@ CRGB leds[NUM_LEDS];
 void setup()
 {
 	Serial.begin(57600);
-	toSend = "HELLO WORLD\0";
+	toSend = WORD_TO_SEND;
 	coder = new MorseCode();
 	coder->setDotTime(DOT_TIME);
 	LEDS.addLeds<WS2812,DATA_PIN,RGB>(leds,NUM_LEDS);

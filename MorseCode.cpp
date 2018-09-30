@@ -4,7 +4,7 @@
 #include "Duration.h"
 
 MorseCode::MorseCode(){
-
+	this->dotTime = 250;
 };
 
 MorseCode::~MorseCode(){
@@ -32,7 +32,7 @@ void MorseCode::SendWord(char* word, void(*duringOn)(), void(*duringOff)()){
 				else{
 					delay(this->dashTime);
 				}
-				
+
 				duringOff();
 				delay(dotTime);
 			}
