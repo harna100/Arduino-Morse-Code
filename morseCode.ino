@@ -7,13 +7,14 @@
 #define DATA_PIN 6
 #define BRIGHTNESS 84
 
+#define SWITCH_PIN 2
+
 #define DOT_TIME 250
-#define TIME_BEFORE_START 5000
-#define TIME_BETWEEN_SENDING 5000
+#define TIME_BEFORE_START 2500
 #define WORD_TO_SEND "SOS\0"
 
 char* toSend;
-MorseCode* coder;
+Morse::MorseCode* coder;
 
 CRGB leds[NUM_LEDS];
 
@@ -21,25 +22,31 @@ void setup()
 {
 	Serial.begin(57600);
 	toSend = WORD_TO_SEND;
-	coder = new MorseCode();
+	coder = new Morse::MorseCode();
 	coder->setDotTime(DOT_TIME);
+	coder->setResetCheck(checkForReset);
 	LEDS.addLeds<WS2812,DATA_PIN,RGB>(leds,NUM_LEDS);
 	LEDS.setBrightness(BRIGHTNESS);
+	pinMode(SWITCH_PIN, INPUT_PULLUP);
 }
 
 
 void loop()
 {	
+	setAllToBlack();
 	Serial.print("Start Loop\n");
+	if(checkForReset()){
+		delay(10);
+		return;
+	}
 	setAllToColor(CRGB::Green);
-	delay(TIME_BEFORE_START);
+	Morse::MorseCode::delayWithCheck(TIME_BEFORE_START, checkForReset);
 
 	Serial.print("Start sending\n");
 	coder->SendWord(toSend, setAllOn, setAllToBlack);
 
 	Serial.print("Finished sending\n");
 	setAllToBlack();
-	delay(TIME_BETWEEN_SENDING);
 }
 
 void setAllOn(){
@@ -58,4 +65,8 @@ void setAllToBlack(){
 		leds[i] = CRGB::Black;
 	}
 	FastLED.show();	
+}
+
+bool checkForReset(){
+	return digitalRead(SWITCH_PIN) == true;
 }
